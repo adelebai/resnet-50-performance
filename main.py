@@ -31,16 +31,17 @@ def print_mem_stats():
 
 if __name__ == '__main__':
     train_loader = get_data_loader()
-    # model = torchvision.models.resnet50(pretrained=False)
-    # is_revnet = False
-    # TODO - this is just a temporary model, need to adjust it to "match" resnet50
-    model = revnet.revnet38()
-    is_revnet = True
+    is_revnet = False
+    if is_revnet:
+        # TODO - this is just a temporary model, need to adjust it to "match" resnet50
+        model = revnet.revnet38()
+    else:
+        model = torchvision.models.resnet50(pretrained=False)
+
     device = 'cuda'
     learning_rate = 0.1
     num_epochs = 1
     model = model.to(config.device)
-
 
     # Define the loss function and optimizer
     criterion = torch.nn.CrossEntropyLoss()
