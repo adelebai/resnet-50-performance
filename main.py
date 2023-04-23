@@ -10,10 +10,13 @@ import torchvision.transforms as transforms
 import numpy as np
 
 import os
+import time
 
 import resnet
 import revnet
 from loader import get_data_loader
+
+import config
 
 
 def print_mem_stats():
@@ -36,11 +39,12 @@ if __name__ == '__main__':
     device = 'cuda'
     learning_rate = 0.1
     num_epochs = 1
-    model = model.to(device)
+    model = model.to(config.device)
+
 
     # Define the loss function and optimizer
     criterion = torch.nn.CrossEntropyLoss()
-    optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
+    optimizer = torch.optim.Adam(model.parameters(), lr=config.learning_rate)
 
     # Train the model...
     # Add profiler to print profiler stats after training. Note - profiler overhead is large.
@@ -48,12 +52,20 @@ if __name__ == '__main__':
     # since this is slow, run ~ 300 batches only.
     # with profile(activities=[ProfilerActivity.CPU, ProfilerActivity.CUDA],
     #     profile_memory=True) as prof:
-    for epoch in range(num_epochs):
+    time_checkpoint = time.perf_counter()
+    time_dataload_total = 0
+    time_training_total = 0
+    time_itcount = 0
+    for epoch in range(config.num_epochs):
         print(f'Starting epoch {epoch+1}... {len(train_loader)} batches total')
         for batch_idx, (inputs, labels) in enumerate(train_loader):
+            time_itcount += 1
+            time_checkpoint_current = time.perf_counter()
+            time_dataload_total += time_checkpoint_current-time_checkpoint
+
             # Move input and label tensors to the device
-            inputs = inputs.to(device)
-            labels = labels.to(device)
+            inputs = inputs.to(config.device)
+            labels = labels.to(config.device)
 
             # Zero out the optimizer
             optimizer.zero_grad()
@@ -73,14 +85,26 @@ if __name__ == '__main__':
 
             if (batch_idx+1) % 100 == 0:
                 print_mem_stats()
-            if (batch_idx+1) % 100 == 0:
+
+            time_checkpoint = time.perf_counter()
+            time_training_total += time_checkpoint - time_checkpoint_current
+
+            if (batch_idx+1) % config.print_every_n_batches == 0:
                 print(f'  Batch {batch_idx+1}/{len(train_loader)}, Loss: {loss.item():.4f}')
+                print(f'    Avg batch data load: {time_dataload_total/time_itcount:.2f}, Avg batch training: {time_training_total/time_itcount:.2f}')
 
             if (batch_idx+1) > 300:
                 break
 
         # Print the loss for every epoch
-        print(f'Epoch {epoch+1}/{num_epochs}, Loss: {loss.item():.4f}')
+        print(f'Finished epoch {epoch+1}/{config.num_epochs}, Loss: {loss.item():.4f}')
+        print(f'  Avg epoch data load: {time_dataload_total/time_itcount:.2f}, Avg epoch training: {time_training_total/time_itcount:.2f}')
+        print(f'  Total epoch data load: {time_dataload_total:.2f}, Total epoch training: {time_training_total:.2f}')
+        print()
+        time_checkpoint = time.perf_counter()
+        time_dataload_total = 0
+        time_training_total = 0
+        time_itcount = 0
 
     print(f'Finished Training, Loss: {loss.item():.4f}')
     

@@ -1,12 +1,15 @@
 import torch
 import torchvision
 import torchvision.transforms as transforms
+import torch.utils.data._utils.worker
 
 import os
 
 from get_dataset import DATA_DIR
+from loader_worker import custom_worker
+import config
 
-def get_data_loader(batch_size=8, train=True):
+def get_data_loader(train=True):
 
     t = {
         'train': transforms.Compose([
@@ -31,5 +34,9 @@ def get_data_loader(batch_size=8, train=True):
     else:
         data = torchvision.datasets.ImageFolder(root=os.path.join(DATA_DIR, 'val.X'), transform=t['test'])
 
-    data_loader = torch.utils.data.DataLoader(dataset=data, batch_size=batch_size, shuffle=True, num_workers=4)
+    # monkey patch our custom, parallelized worker loop
+    if config.use_threaded_loader_worker:
+        torch.utils.data._utils.worker._worker_loop = custom_worker
+
+    data_loader = torch.utils.data.DataLoader(dataset=data, batch_size=config.batch_size, shuffle=True, num_workers=config.num_dataloader_workers)
     return data_loader
