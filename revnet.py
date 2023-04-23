@@ -37,7 +37,7 @@ def possible_downsample(x, in_channels, out_channels, stride=1, padding=1,
 
     _, _, H_out, W_out = size_after_residual(x.size(), out_channels, 3, stride, padding, dilation)
 
-    print(f"H_in = {H_in}, H_out {H_out}")
+    #print(f"H_in = {H_in}, H_out {H_out}")
 
     # Downsample image
     if H_in > H_out or W_in > W_out:
@@ -90,7 +90,7 @@ class RevBlockFunction(Function):
 
 
     @staticmethod
-    def _forward(x, in_channels, out_channels, training, stride, padding,
+    def _forward(x, in_channels, out_channels, stride, padding,
                  dilation, f_params, g_params,
                  no_activation=False):
 
@@ -124,7 +124,7 @@ class RevBlockFunction(Function):
 
     @staticmethod
     def _backward(output, in_channels, out_channels, f_params,
-                  g_params, training, padding, dilation, no_activation):
+                  g_params, padding, dilation, no_activation):
 
         y1, y2 = torch.chunk(output, 2, dim=1)
         with torch.no_grad():
@@ -142,7 +142,7 @@ class RevBlockFunction(Function):
         return x
 
     @staticmethod
-    def _grad(x, dy, in_channels, out_channels, training, stride, padding,
+    def _grad(x, dy, in_channels, out_channels, stride, padding,
               dilation, activations, f_params, g_params,
               no_activation=False, storage_hooks=[]):
         dy1, dy2 = torch.chunk(dy, 2, dim=1)
@@ -196,8 +196,8 @@ class RevBlockFunction(Function):
         return dx, dfw, dgw
 
     @staticmethod
-    def forward(ctx, x, in_channels, out_channels, training, stride, padding,
-                dilation, no_activation, activations, storage_hooks, model):
+    def forward(ctx, x, in_channels, out_channels, stride, padding,
+                dilation, no_activation, activations, storage_hooks, model, *args):
         """Compute forward pass including boilerplate code.
         This should not be called directly, use the apply method of this class.
         Args:
@@ -205,7 +205,6 @@ class RevBlockFunction(Function):
             x (Tensor):                     4D input tensor
             in_channels (int):              Number of channels on input
             out_channels (int):             Number of channels on output
-            training (bool):                Whethere we are training right now
             stride (int):                   Stride to use for convolutions
             no_activation (bool):           Whether to compute an initial
                                             activation in the residual function
@@ -233,7 +232,6 @@ class RevBlockFunction(Function):
         ctx.stride = stride
         ctx.padding = padding
         ctx.dilation = dilation
-        ctx.training = training
         ctx.no_activation = no_activation
         ctx.storage_hooks = storage_hooks
         ctx.activations = activations
@@ -244,7 +242,6 @@ class RevBlockFunction(Function):
             x,
             in_channels,
             out_channels,
-            training,
             stride,
             padding,
             dilation,
@@ -278,7 +275,6 @@ class RevBlockFunction(Function):
                 in_channels,
                 out_channels,
                 f_params, g_params,
-                ctx.training,
                 ctx.padding,
                 ctx.dilation,
                 ctx.no_activation
@@ -289,7 +285,6 @@ class RevBlockFunction(Function):
             grad_out,
             in_channels,
             out_channels,
-            ctx.training,
             ctx.stride,
             ctx.padding,
             ctx.dilation,
@@ -302,8 +297,12 @@ class RevBlockFunction(Function):
         # delete the expensive state dictionary
         del ctx.state_d
 
-        return ((dx, None, None, None, None, None, None, None, None, None) + tuple(dfw) +
-                tuple(dgw) + tuple([None]*4))
+        #print(f"Grads: dx: {dx} dfw: {dfw} dgw: {dgw}")
+        # print(f"Grad sizes: dx: {dx.size()} dfw: {len(dfw)} dgw: {len(dgw)}")
+
+        return ((dx, None, None, None, None, None, None, None, None, None) + tuple(dfw) + tuple(dgw))
+        # return ((dx, None, None, None, None, None, None, None, None, None) + tuple(dfw) +
+        #         tuple(dgw) + tuple([None]*4))
 
 
 class RevBlock(nn.Module):
@@ -344,20 +343,21 @@ class RevBlock(nn.Module):
                           kernel_size=3, stride=1, bias=True, padding=1))
 
     def forward(self, x):
-        print(f"PARAMS on FWD: {self.f_params}, {self.g_params}")
+        #print(f"PARAMS on FWD: {self.f_params}, {self.g_params}")
         # print(f"Inner PARAMS on FWD: {self.f_params.parameters()}, {self.g_params.parameters()}")
         return RevBlockFunction.apply(
             x,
             self.in_channels,
             self.out_channels,
-            self.training,
             self.stride,
             self.padding,
             self.dilation,
             self.no_activation,
             self.activations,
             self.storage_hooks,
-            self
+            self,
+            *self.f_params.parameters(),
+            *self.g_params.parameters()
         )
 
 
