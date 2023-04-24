@@ -31,12 +31,15 @@ def print_mem_stats():
 
 if __name__ == '__main__':
     train_loader = get_data_loader()
-    is_revnet = False
-    if is_revnet:
-        # TODO - this is just a temporary model, need to adjust it to "match" resnet50
-        model = revnet.revnet38()
+    use_revnet = config.use_revnet
+    if use_revnet:
+        # Chosen this configuration to match the number of params in resnet18
+        # resnet18 has around 1.12mil params. This revnet has around 1.14mil.
+        # Note - this currently makes me run out of memory. Need to figure out which
+        # "resnet32" was used in the paper with only 0.4mil parameters.
+        model = revnet.revnet_3_3_3_4()
     else:
-        model = torchvision.models.resnet50(pretrained=False)
+        model = torchvision.models.resnet18(pretrained=False)
 
     device = 'cuda'
     learning_rate = 0.1
@@ -80,7 +83,7 @@ if __name__ == '__main__':
             optimizer.step()
 
             # free activations, clip gradients
-            if is_revnet:
+            if use_revnet:
                 model.free()
                 torch.nn.utils.clip_grad_norm_(model.parameters(), 0.25)
 
