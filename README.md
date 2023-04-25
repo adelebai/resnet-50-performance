@@ -32,3 +32,5 @@ Store tensorboard charts in /log and visualize them with
 ```
 tensorboard --logdir=./log
 ```
+
+And go to http://localhost:6006/#pytorch_profiler
