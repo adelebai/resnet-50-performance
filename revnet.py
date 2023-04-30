@@ -1,9 +1,10 @@
 """
-Based on code from https://github.com/tbung/pytorch-revnet/blob/master/revnet/revnet.py
+Boilerplate code is borrowed from https://github.com/tbung/pytorch-revnet/blob/master/revnet/revnet.py
 
 But I've refactored the code:
-    - using nn.Module grouping instead of explicitly managing parameter tensors
+    - using nn.Module grouping instead of explicitly managing parameter tensors: more readable
     - implemented Bottleneck node
+    - some more memory and computationally efficient calls (50% less memory)
 
 With the Bottleneck node, we can build ResNet 50+
 
@@ -14,52 +15,31 @@ import math
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import sys
 
 from torch.autograd import Function, Variable
 
 def possible_downsample(x, in_channels, out_channels, stride=1,  kernel_size=3):
-    # we only downsample when stride > 1
-    downsampled = stride > 1
     #print(f"H_in = {H_in}, H_out {H_out}")
+    out = x
 
     # Downsample image
-    if downsampled:
-        # downsampling only happens for the size 3 kernels (since some have stride=2)
-        out = F.avg_pool2d(x, 3, stride, 1)
+    # downsampling only happens for the size 3 kernels (since some have stride=2)
+    if stride > 1:
+        out = F.avg_pool2d(x, kernel_size, stride, 1)
 
     # Pad with empty channels
     if in_channels < out_channels:
-        # if out was not assigned, means we downsampled. If we didn't then need to assign out to something.
-        if not downsampled:
-            out = x
-
-        pad = Variable(torch.zeros(
-            out.size(0),
-            (out_channels - in_channels) // 2,
-            out.size(2), out.size(3)
-        ), requires_grad=True)
-
-        pad = pad.cuda()
-        out = torch.cat([pad, out, pad], dim=1)
-    else:
-        # If we did nothing, add zero tensor, so the output of this function
-        # depends on the input in the graph
-        if not downsampled:
-            injection = Variable(torch.zeros_like(x.data), requires_grad=True)
-            injection.cuda()
-            out = x + injection
+        # Pad the second dimension with channel diff
+        channel_diff = (out_channels - in_channels) // 2
+        out = F.pad(out, (0, 0, 0, 0, channel_diff, channel_diff, 0, 0), 'constant', 0)
 
     return out
 
 class RevBlockFunction(Function):
     @staticmethod
     def residual(x, params):
-        """Compute a pre-activation residual function.
-        Args:
-            x (Variable): The input variable
-        Returns:
-            out (Variable): The result of the computation
-        """
+        """Compute a pre-activation residual function."""
         #print(f"res beginning size: {x.size()}")
         out = x
         for param in params:
@@ -70,62 +50,41 @@ class RevBlockFunction(Function):
 
 
     @staticmethod
-    def _forward(x, in_channels, out_channels, stride, f_params, g_params,
-                 no_activation=False):
-
-        x1, x2 = torch.chunk(x, 2, dim=1)
-
+    def _forward(x1, x2, in_channels, out_channels, stride, f_params, g_params):
         with torch.no_grad():
-            # x1 = Variable(x1.contiguous())
-            # x2 = Variable(x2.contiguous())
-            # x1.cuda()
-            # x2.cuda()
-
             x1_ = possible_downsample(x1, in_channels, out_channels, stride)
             x2_ = possible_downsample(x2, in_channels, out_channels, stride)
 
             f_x2 = RevBlockFunction.residual(x2, f_params)
-            y1 = f_x2 + x1_
-            g_y1 = RevBlockFunction.residual(y1, g_params)
-            y2 = g_y1 + x2_
-
-            y = torch.cat([y1, y2], dim=1)
-
-            del y1, y2
-            del x1, x2
+            # y1 = f_x2 + x1_
+            f_x2 = f_x2.add_(x1_)
+            g_y1 = RevBlockFunction.residual(f_x2, g_params)
+            # y2 = g_y1 + x2_
+            g_y1 = g_y1.add_(x2_)
+            #y = torch.cat([x1_, x2_], dim=1)
+            y = torch.cat([f_x2, g_y1], dim=1)
+            # del y1, y2
+            # del x1, x2
 
         return y
 
     @staticmethod
-    def _backward(output, in_channels, out_channels, f_params,
-                  g_params, no_activation):
+    def _backward(y1, y2, f_params, g_params):
 
-        y1, y2 = torch.chunk(output, 2, dim=1)
         with torch.no_grad():
-            # y1 = Variable(y1.contiguous())
-            # y2 = Variable(y2.contiguous())
             x2 = y2 - RevBlockFunction.residual(y1, g_params)
             x1 = y1 - RevBlockFunction.residual(x2, f_params)
-            del y1, y2
-            x1, x2 = x1.data, x2.data
 
-            x = torch.cat((x1, x2), 1)
-        return x
+        return x1, x2
 
     @staticmethod
-    def _grad(x, dy, in_channels, out_channels, stride, 
-              activations, f_params, g_params,
-              no_activation=False, storage_hooks=[]):
+    def _grad(x1, x2, dy, in_channels, out_channels, stride, 
+              f_params, g_params):
         dy1, dy2 = torch.chunk(dy, 2, dim=1)
-        x1, x2 = torch.chunk(x, 2, dim=1)
 
         with torch.enable_grad():
-            x1 = Variable(x1.contiguous(), requires_grad=True)
-            x2 = Variable(x2.contiguous(), requires_grad=True)
-            x1.retain_grad()
-            x2.retain_grad()
-            x1.cuda()
-            x2.cuda()
+            x1.requires_grad_()
+            x2.requires_grad_()
 
             x1_ = possible_downsample(x1, in_channels, out_channels, stride)
             x2_ = possible_downsample(x2, in_channels, out_channels, stride)
@@ -135,34 +94,20 @@ class RevBlockFunction(Function):
             g_y1 = RevBlockFunction.residual(y1_, g_params)
             y2_ = g_y1 + x2_
 
-            dd1 = torch.autograd.grad(y2_, (y1_,) + tuple(g_params.parameters()), dy2,
-                                      retain_graph=True)
-            dy2_y1 = dd1[0]
-            dgw = dd1[1:]
+            dy2_y1 = torch.autograd.grad(y2_, y1_, dy2, retain_graph=False)[0]
             dy1_plus = dy2_y1 + dy1
-            dd2 = torch.autograd.grad(y1_, (x1, x2) + tuple(f_params.parameters()), dy1_plus,
-                                      retain_graph=True)
-            dfw = dd2[2:]
 
-            dx2 = dd2[1]
-            dx2 += torch.autograd.grad(x2_, x2, dy2, retain_graph=True)[0]
-            dx1 = dd2[0]
+            dd2 = torch.autograd.grad(y1_, (x1, x2), dy1_plus, retain_graph=False)
+            dx2 = dd2[1] + torch.autograd.grad(x2_, x2, dy2, retain_graph=False)[0]
 
-            for hook in storage_hooks:
-                x = hook(x)
+            # del y1_, y2_, x1, x2, dy1, dy2
+            # dx = torch.cat((dd2[0], dx2), 1)
 
-            activations.append(x)
-
-            y1_.detach_()
-            y2_.detach_()
-            del y1_, y2_
-            dx = torch.cat((dx1, dx2), 1)
-
-        return dx, dfw, dgw
+        return dd2[0], dx2
 
     @staticmethod
-    def forward(ctx, x, in_channels, out_channels, stride,
-            no_activation, activations, storage_hooks, model, *args):
+    def forward(ctx, x1, x2, in_channels, out_channels, stride,
+            no_activation, activations, model):
         """Compute forward pass including boilerplate code.
         This should not be called directly, use the apply method of this class.
         Args:
@@ -174,38 +119,34 @@ class RevBlockFunction(Function):
             no_activation (bool):           Whether to compute an initial
                                             activation in the residual function
             activations (List):             Activation stack
-            storage_hooks (List[Function]): Functions to apply to activations
-                                            before storing them
             model
         """
 
         # if the images get smaller information is lost and we need to save the input
         # stride > 1 means we downsampled
+        # x1, x2 = torch.chunk(x, 2, dim=1)
         if stride > 1:
-            activations.append(x)
+            activations.append((x1, x2))
             ctx.load_input = True
         else:
             ctx.load_input = False
 
         f_params, g_params = model.f_params, model.g_params
 
-        # ctx.save_for_backward(*f_params.parameters(), *g_params.parameters())
-        # Save the state_dict for back prop
-        ctx.state_d = model.state_dict()
+        # I hope this doesn't store a copy of the model params, just the pointer.
+        ctx.f_params = f_params
+        ctx.g_params = g_params
         ctx.stride = stride
-        ctx.no_activation = no_activation
-        ctx.storage_hooks = storage_hooks
         ctx.activations = activations
         ctx.in_channels = in_channels
         ctx.out_channels = out_channels
 
         y = RevBlockFunction._forward(
-            x,
+            x1, x2,
             in_channels,
             out_channels,
             stride,
-            f_params, g_params,
-            no_activation=no_activation
+            f_params, g_params
         )
 
         return y.data
@@ -215,49 +156,42 @@ class RevBlockFunction(Function):
         in_channels = ctx.in_channels
         out_channels = ctx.out_channels
 
-        # Load the old rev block (note RevBlock reduces channel size by 1/2, so need to restore the 2* value)
-        old_model = RevBlock(2*in_channels, 2*out_channels, ctx.activations, stride=ctx.stride, 
-            no_activation=ctx.no_activation, storage_hooks=ctx.storage_hooks)
-        old_model.load_state_dict(ctx.state_d)
-        old_model = old_model.cuda()
-
-        f_params, g_params = old_model.f_params, old_model.g_params
+        f_params, g_params = ctx.f_params, ctx.g_params
 
         # Load or reconstruct input
         if ctx.load_input:
             ctx.activations.pop()
-            x = ctx.activations.pop()
+            x1, x2 = ctx.activations[-1]
         else:
-            output = ctx.activations.pop()
-            x = RevBlockFunction._backward(
-                output,
-                in_channels,
-                out_channels,
-                f_params, g_params,
-                ctx.no_activation
+            # Either read from the stored activations, or reconstruct them.
+            # this is the key step that allows us to not store the additional activations.
+            out1, out2 = ctx.activations.pop()
+            x1, x2 = RevBlockFunction._backward(
+                out1, out2,
+                f_params, g_params
             )
+            del out1, out2
+            ctx.activations.append((x1, x2))
 
-        dx, dfw, dgw = RevBlockFunction._grad(
-            x,
+        dx1, dx2 = RevBlockFunction._grad(
+            x1, x2,
             grad_out,
             in_channels,
             out_channels,
             ctx.stride,
-            ctx.activations,
             f_params, g_params,
-            no_activation=ctx.no_activation,
-            storage_hooks=ctx.storage_hooks
         )
 
-        # delete the expensive state dictionary
-        del ctx.state_d
+        # The question is - do we actually need to append this?
+        # probably so we can do the next backward iteration using these values.
+        # ctx.activations.append((x1, x2))
 
-        return ((dx, None, None, None, None, None, None, None) + tuple(dfw) + tuple(dgw))
+        return (dx1, dx2, None, None, None, None, None, None, None)
 
 
 class RevBlock(nn.Module):
     def __init__(self, in_channels, out_channels, activations, stride=1,
-                 no_activation=False, storage_hooks=[]):
+                 no_activation=False):
         super(RevBlock, self).__init__()
 
         # Halve the channels for F & G residuals
@@ -266,7 +200,6 @@ class RevBlock(nn.Module):
         self.stride = stride
         self.no_activation = no_activation
         self.activations = activations
-        self.storage_hooks = storage_hooks
 
         # Define F residual
         self.f_params = nn.ParameterList()
@@ -294,18 +227,18 @@ class RevBlock(nn.Module):
     def forward(self, x):
         #print(f"PARAMS on FWD: {self.f_params}, {self.g_params}")
         # print(f"Inner PARAMS on FWD: {self.f_params.parameters()}, {self.g_params.parameters()}")
-        return RevBlockFunction.apply(
-            x,
+        x1, x2 = torch.chunk(x, 2, dim=1)
+        y = RevBlockFunction.apply(
+            x1, x2, 
             self.in_channels,
             self.out_channels,
             self.stride,
             self.no_activation,
             self.activations,
-            self.storage_hooks,
             self,
-            *self.f_params.parameters(),
-            *self.g_params.parameters()
         )
+        del x1, x2
+        return y
 
 
 class RevBottleneck(nn.Module):
@@ -366,23 +299,10 @@ class RevBottleneck(nn.Module):
             self.activations,
             self.storage_hooks,
             self,
-            *self.f_params.parameters(),
-            *self.g_params.parameters()
         )
 
 
-# def revnet38():
-#     model = RevNet(
-#             units=[3, 3, 3],
-#             filters=[32, 32, 64, 112],
-#             strides=[1, 2, 2],
-#             classes=100
-#             )
-#     model.name = "revnet38"
-#     return model
-
-
-def revnet38():
+def revnet3_3_3():
     model = RevNet(
             units=[3, 3, 3],
             filters=[32, 32, 64, 112],
@@ -391,11 +311,20 @@ def revnet38():
             )
     return model
 
-def revnet_3_3_3_4():
+def revnet5_5_5():
     model = RevNet(
-            units=[3, 3, 3, 4],
-            filters=[64, 64, 128, 256, 512],
-            strides=[1, 1, 1, 1],
+            units=[5, 5, 5],
+            filters=[32, 32, 64, 112],
+            strides=[1, 2, 2],
+            classes=100,
+        )
+    return model
+
+def revnet9_9_9():
+    model = RevNet(
+            units=[9, 9, 9],
+            filters=[32, 32, 64, 112],
+            strides=[1, 2, 2],
             classes=100,
         )
     return model
@@ -455,7 +384,10 @@ class RevNet(nn.Module):
             x = layer(x)
 
         # Save last output for backward
-        self.activations.append(x.data)
+        # Save them in chunked form since it saves more compute down the line
+        x1, x2 = torch.chunk(x, 2, dim=1)
+        self.activations.append((x1, x2))
+        del x1, x2
 
         x = F.avg_pool2d(x, x.size(2))
         x = x.view(x.size(0), -1)
@@ -465,4 +397,5 @@ class RevNet(nn.Module):
 
     def free(self):
         """Clear saved activation residue and thereby free memory."""
+        # print(f"size of activations vector when freeing: { sys.getsizeof(self.activations)}")
         del self.activations[:]
