@@ -34,8 +34,8 @@ And go to http://localhost:6006/#pytorch_profiler
 
 Our results did not indicate any speed improvements from the data loading optimizations. However, this may have been due to the limited scale of our test setup on a single machine, which is not representative of a realistic training setup on petabytes of data. We propose evaluating the described optimizations on a distributed training cluster as a next step.  
 
- | Data loading time (s) | Forward and backprop time (s) |
- |-----------------------|---------------------------|
+ || Data loading time (s) | Forward and backprop time (s) |
+ |-----------------------|---------------------------|----|
  |Baseline | 703.08 | 1266.58 |
  |With parallelized DataLoader workers only | 1051.83 | 1139.75 |
 
