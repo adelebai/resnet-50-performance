@@ -7,8 +7,10 @@ num_dataloader_workers = 4
 # hyperparams
 learning_rate = 0.1
 num_epochs = 1
-batch_size = 8
+batch_size = 32
+decay = 2e-4
+momentum = 0.9
 
 # optimizations
-use_threaded_loader_worker = False
+use_threaded_loader_worker = True
 use_revnet = True

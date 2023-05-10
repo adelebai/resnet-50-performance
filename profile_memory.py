@@ -36,16 +36,21 @@ if __name__ == '__main__':
     train_loader = get_data_loader()
     # model_name = 'revnet-3-3-3'
     # model = revnet.revnet3_3_3()
-    # model_name = 'revnet-5-5-5'
-    # model = revnet.revnet5_5_5()
-    model_name = 'revnet-9-9-9'
-    model = revnet.revnet9_9_9()
-    # model_name = 'adjusted-resnet18'
-    # model = resnet_adjusted.ResNet18()
-    # model_name = 'assignment-resnet18'
-    # model = resnet.ResNet18()
+    # rev_size = 64
+    # model_name = f"revnet-{rev_size}-{rev_size}-{rev_size}"
+    # model = revnet.revnet_custom([rev_size, rev_size, rev_size])
+
+    # rev_size = 5
+    # model_name = f"revnet-{rev_size}-{rev_size}-{rev_size}-batch32"
+    # model = revnet.revnet_custom([rev_size, rev_size, rev_size])
+
+    # model_name = 'adjusted-resnet50'
+    # model = resnet_adjusted.ResNet50()
+    model_name = 'adjusted-resnet18-batch32'
+    model = resnet_adjusted.ResNet18()
     # model_name = 'torch-resnet18'
     # model = torchvision.models.resnet18(pretrained=False)
+
     device = 'cuda'
     learning_rate = 0.1
     num_epochs = 1
@@ -91,7 +96,7 @@ if __name__ == '__main__':
 
                 optimizer.step()
 
-                if (batch_idx+1) > 10:
+                if (batch_idx+1) > 5:
                     print_mem_stats()
                     break
 

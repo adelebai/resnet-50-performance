@@ -3,10 +3,8 @@ Boilerplate code is borrowed from https://github.com/tbung/pytorch-revnet/blob/m
 
 But I've refactored the code:
     - using nn.Module grouping instead of explicitly managing parameter tensors: more readable
-    - implemented Bottleneck node
+        - runs faster, uses less memory as a baseline.
     - some more memory and computationally efficient calls (50% less memory)
-
-With the Bottleneck node, we can build ResNet 50+
 
 """
 
@@ -171,6 +169,8 @@ class RevBlockFunction(Function):
                 f_params, g_params
             )
             del out1, out2
+            # The question is - do we actually need to append this?
+            # probably so we can do the next backward iteration using these values.
             ctx.activations.append((x1, x2))
 
         dx1, dx2 = RevBlockFunction._grad(
@@ -181,10 +181,6 @@ class RevBlockFunction(Function):
             ctx.stride,
             f_params, g_params,
         )
-
-        # The question is - do we actually need to append this?
-        # probably so we can do the next backward iteration using these values.
-        # ctx.activations.append((x1, x2))
 
         return (dx1, dx2, None, None, None, None, None, None, None)
 
@@ -241,67 +237,6 @@ class RevBlock(nn.Module):
         return y
 
 
-class RevBottleneck(nn.Module):
-    def __init__(self, in_channels, out_channels, activations, stride=1,
-                 no_activation=False, storage_hooks=[]):
-        super(RevBottleneck, self).__init__()
-
-        # Halve the channels for F & G residuals
-        self.in_channels = in_channels // 2
-        self.out_channels = out_channels // 2
-        self.stride = stride
-        self.no_activation = no_activation
-        self.activations = activations
-        self.storage_hooks = storage_hooks
-
-        # Define F residual
-        # note only the size3 conv kernels have a stride != 1
-        self.f_params = nn.ParameterList()
-        if not no_activation:
-            self.f_params.append(nn.BatchNorm2d(self.in_channels))
-            self.f_params.append(nn.ReLU())
-        self.f_params.append(nn.Conv2d(self.in_channels, self.out_channels,
-                          kernel_size=1, stride=1, bias=True, padding=1))
-        self.f_params.append(nn.BatchNorm2d(self.out_channels))
-        self.f_params.append(nn.ReLU())
-        self.f_params.append(nn.Conv2d(self.out_channels, self.out_channels,
-                          kernel_size=3, stride=stride, bias=True, padding=1))
-        self.f_params.append(nn.BatchNorm2d(self.out_channels))
-        self.f_params.append(nn.ReLU())
-        self.f_params.append(nn.Conv2d(self.out_channels, self.out_channels,
-                          kernel_size=1, stride=1, bias=True, padding=1))
-
-        # Define G residual
-        self.g_params = nn.ParameterList()
-        self.g_params.append(nn.BatchNorm2d(self.out_channels))
-        self.g_params.append(nn.ReLU())
-        self.g_params.append(nn.Conv2d(self.out_channels, self.out_channels,
-                          kernel_size=1, stride=1, bias=True, padding=1))
-        self.g_params.append(nn.BatchNorm2d(self.out_channels))
-        self.g_params.append(nn.ReLU())
-        self.g_params.append(nn.Conv2d(self.out_channels, self.out_channels,
-                          kernel_size=3, stride=stride, bias=True, padding=1))
-        self.g_params.append(nn.BatchNorm2d(self.out_channels))
-        self.g_params.append(nn.ReLU())
-        self.g_params.append(nn.Conv2d(self.out_channels, self.out_channels,
-                          kernel_size=1, stride=1, bias=True, padding=1))
-
-
-    def forward(self, x):
-        #print(f"PARAMS on FWD: {self.f_params}, {self.g_params}")
-        # print(f"Inner PARAMS on FWD: {self.f_params.parameters()}, {self.g_params.parameters()}")
-        return RevBlockFunction.apply(
-            x,
-            self.in_channels,
-            self.out_channels,
-            self.stride,
-            self.no_activation,
-            self.activations,
-            self.storage_hooks,
-            self,
-        )
-
-
 def revnet3_3_3():
     model = RevNet(
             units=[3, 3, 3],
@@ -311,18 +246,19 @@ def revnet3_3_3():
             )
     return model
 
-def revnet5_5_5():
+def revnet_custom2(units):
     model = RevNet(
-            units=[5, 5, 5],
-            filters=[32, 32, 64, 112],
+            units=units,
+            filters=[64, 64, 128, 256],
             strides=[1, 2, 2],
             classes=100,
         )
     return model
 
-def revnet9_9_9():
+# input a 3 dimensional vector e.g. [9, 9, 9] with length ofn each block.
+def revnet_custom(units):
     model = RevNet(
-            units=[9, 9, 9],
+            units=units,
             filters=[32, 32, 64, 112],
             strides=[1, 2, 2],
             classes=100,
