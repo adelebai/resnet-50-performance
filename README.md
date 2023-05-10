@@ -45,6 +45,7 @@ Our results did not indicate any speed improvements from the data loading optimi
 Peak Memory Usage with batch size 8:
 
 | Peak Memory Usage (mb) | Time (s) per batch | \# Parameters |
+|------------------------|--------------------|---------------|
 | Adjusted ResNet18 | 743 | 0.3 | 746,436 |
 | Adjusted ResNet34 | 1158 | 0.4 | 1,393,476 |
 | Adjusted ResNet50 | 3494 | 0.57 | 1,581,700 |
