@@ -19,7 +19,7 @@ if __name__ == '__main__':
             classes=100,
             bottleneck=True
             ),
-        # "revnet3-3-3" : revnet.revnet38(),
+        "revnet3-3-3" : revnet.revnet38(),
         "revnet3-3-3-4" : revnet.RevNet(
             units=[3, 3, 3, 4],
             filters=[64, 64, 128, 256, 512],
@@ -29,6 +29,10 @@ if __name__ == '__main__':
     }
     for name in revnets:
         print(f"Model: {name} has number of parameters: {count_parameters(revnets[name])}")
+
+    print("Printing (Adjusted for filters=[32, 32, 64, 112]) ResNets and parameter counts:")    
+    print("TBC")
+    
 
     print("Printing (Assignment 2) ResNets and parameter counts:")    
     resnets = {
