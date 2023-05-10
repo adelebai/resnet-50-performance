@@ -1,0 +1,330 @@
+Starting epoch 1... 16250 batches total
+  Batch 100/16250, Loss: 9.7271
+    Avg batch data load: 0.10, Avg batch training: 0.43
+  Batch 200/16250, Loss: 13.5498
+    Avg batch data load: 0.05, Avg batch training: 0.43
+  Batch 300/16250, Loss: 14.0526
+    Avg batch data load: 0.04, Avg batch training: 0.42
+  Batch 400/16250, Loss: 12.6611
+    Avg batch data load: 0.03, Avg batch training: 0.42
+  Batch 500/16250, Loss: 15.2413
+    Avg batch data load: 0.02, Avg batch training: 0.43
+  Batch 600/16250, Loss: 9.7522
+    Avg batch data load: 0.02, Avg batch training: 0.43
+  Batch 700/16250, Loss: 12.6866
+    Avg batch data load: 0.02, Avg batch training: 0.43
+  Batch 800/16250, Loss: 12.9207
+    Avg batch data load: 0.01, Avg batch training: 0.43
+  Batch 900/16250, Loss: 8.1129
+    Avg batch data load: 0.01, Avg batch training: 0.43
+  Batch 1000/16250, Loss: 10.3510
+    Avg batch data load: 0.01, Avg batch training: 0.43
+  Batch 1100/16250, Loss: 12.7194
+    Avg batch data load: 0.01, Avg batch training: 0.43
+  Batch 1200/16250, Loss: 14.1778
+    Avg batch data load: 0.01, Avg batch training: 0.43
+  Batch 1300/16250, Loss: 8.6067
+    Avg batch data load: 0.01, Avg batch training: 0.43
+  Batch 1400/16250, Loss: 13.5559
+    Avg batch data load: 0.01, Avg batch training: 0.43
+  Batch 1500/16250, Loss: 9.2608
+    Avg batch data load: 0.01, Avg batch training: 0.43
+  Batch 1600/16250, Loss: 12.1060
+    Avg batch data load: 0.01, Avg batch training: 0.43
+  Batch 1700/16250, Loss: 13.7550
+    Avg batch data load: 0.01, Avg batch training: 0.43
+  Batch 1800/16250, Loss: 11.1322
+    Avg batch data load: 0.01, Avg batch training: 0.43
+  Batch 1900/16250, Loss: 14.0311
+    Avg batch data load: 0.01, Avg batch training: 0.43
+  Batch 2000/16250, Loss: 15.6317
+    Avg batch data load: 0.01, Avg batch training: 0.43
+  Batch 2100/16250, Loss: 9.7359
+    Avg batch data load: 0.01, Avg batch training: 0.43
+  Batch 2200/16250, Loss: 11.9155
+    Avg batch data load: 0.01, Avg batch training: 0.43
+  Batch 2300/16250, Loss: 5.9394
+    Avg batch data load: 0.01, Avg batch training: 0.43
+  Batch 2400/16250, Loss: 12.1207
+    Avg batch data load: 0.01, Avg batch training: 0.43
+  Batch 2500/16250, Loss: 11.5022
+    Avg batch data load: 0.01, Avg batch training: 0.43
+  Batch 2600/16250, Loss: 14.1736
+    Avg batch data load: 0.01, Avg batch training: 0.43
+  Batch 2700/16250, Loss: 8.0240
+    Avg batch data load: 0.01, Avg batch training: 0.43
+  Batch 2800/16250, Loss: 8.9468
+    Avg batch data load: 0.01, Avg batch training: 0.43
+  Batch 2900/16250, Loss: 11.9112
+    Avg batch data load: 0.01, Avg batch training: 0.43
+  Batch 3000/16250, Loss: 10.1599
+    Avg batch data load: 0.01, Avg batch training: 0.43
+  Batch 3100/16250, Loss: 11.0040
+    Avg batch data load: 0.01, Avg batch training: 0.43
+  Batch 3200/16250, Loss: 10.5858
+    Avg batch data load: 0.01, Avg batch training: 0.43
+  Batch 3300/16250, Loss: 14.6114
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 3400/16250, Loss: 9.2929
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 3500/16250, Loss: 11.1403
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 3600/16250, Loss: 10.1586
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 3700/16250, Loss: 9.5859
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 3800/16250, Loss: 8.1516
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 3900/16250, Loss: 9.6763
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 4000/16250, Loss: 8.6685
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 4100/16250, Loss: 14.6209
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 4200/16250, Loss: 9.4739
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 4300/16250, Loss: 9.6721
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 4400/16250, Loss: 7.4211
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 4500/16250, Loss: 10.3592
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 4600/16250, Loss: 11.1245
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 4700/16250, Loss: 16.0645
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 4800/16250, Loss: 6.8636
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 4900/16250, Loss: 8.8471
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 5000/16250, Loss: 11.4877
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 5100/16250, Loss: 6.9526
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 5200/16250, Loss: 15.2802
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 5300/16250, Loss: 13.6628
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 5400/16250, Loss: 14.0031
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 5500/16250, Loss: 9.7751
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 5600/16250, Loss: 13.2849
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 5700/16250, Loss: 9.4990
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 5800/16250, Loss: 10.5723
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 5900/16250, Loss: 7.4783
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 6000/16250, Loss: 11.3142
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 6100/16250, Loss: 8.0960
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 6200/16250, Loss: 14.4061
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 6300/16250, Loss: 15.1612
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 6400/16250, Loss: 8.9565
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 6500/16250, Loss: 12.1575
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 6600/16250, Loss: 14.0859
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 6700/16250, Loss: 17.1063
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 6800/16250, Loss: 8.8699
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 6900/16250, Loss: 7.6216
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 7000/16250, Loss: 11.6905
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 7100/16250, Loss: 8.7387
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 7200/16250, Loss: 13.0916
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 7300/16250, Loss: 8.6748
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 7400/16250, Loss: 11.4020
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 7500/16250, Loss: 15.4324
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 7600/16250, Loss: 7.8241
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 7700/16250, Loss: 13.2479
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 7800/16250, Loss: 11.8186
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 7900/16250, Loss: 11.9071
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 8000/16250, Loss: 12.4087
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 8100/16250, Loss: 9.7215
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 8200/16250, Loss: 10.6306
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 8300/16250, Loss: 8.0726
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 8400/16250, Loss: 12.1941
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 8500/16250, Loss: 12.2175
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 8600/16250, Loss: 8.6828
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 8700/16250, Loss: 10.3900
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 8800/16250, Loss: 12.0653
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 8900/16250, Loss: 11.2429
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 9000/16250, Loss: 9.2755
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 9100/16250, Loss: 14.2232
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 9200/16250, Loss: 13.3890
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 9300/16250, Loss: 10.9588
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 9400/16250, Loss: 8.7201
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 9500/16250, Loss: 11.9816
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 9600/16250, Loss: 11.0218
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 9700/16250, Loss: 15.2651
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 9800/16250, Loss: 11.7060
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 9900/16250, Loss: 10.6904
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 10000/16250, Loss: 9.1629
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 10100/16250, Loss: 15.3917
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 10200/16250, Loss: 10.0308
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 10300/16250, Loss: 12.5206
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 10400/16250, Loss: 12.2233
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 10500/16250, Loss: 19.9719
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 10600/16250, Loss: 7.0817
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 10700/16250, Loss: 9.9107
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 10800/16250, Loss: 8.9732
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 10900/16250, Loss: 9.4711
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 11000/16250, Loss: 8.5025
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 11100/16250, Loss: 9.9106
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 11200/16250, Loss: 9.8344
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 11300/16250, Loss: 10.5779
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 11400/16250, Loss: 12.1157
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 11500/16250, Loss: 11.5821
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 11600/16250, Loss: 14.2924
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 11700/16250, Loss: 11.0572
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 11800/16250, Loss: 9.4414
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 11900/16250, Loss: 8.2675
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 12000/16250, Loss: 8.3538
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 12100/16250, Loss: 9.3553
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 12200/16250, Loss: 11.3232
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 12300/16250, Loss: 11.1629
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 12400/16250, Loss: 11.1527
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 12500/16250, Loss: 12.6443
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 12600/16250, Loss: 12.1810
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 12700/16250, Loss: 11.9372
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 12800/16250, Loss: 11.4600
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 12900/16250, Loss: 11.5084
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 13000/16250, Loss: 7.2797
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 13100/16250, Loss: 10.9882
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 13200/16250, Loss: 8.0611
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 13300/16250, Loss: 8.0518
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 13400/16250, Loss: 13.2733
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 13500/16250, Loss: 11.0805
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 13600/16250, Loss: 8.9365
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 13700/16250, Loss: 11.5476
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 13800/16250, Loss: 11.2484
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 13900/16250, Loss: 11.3929
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 14000/16250, Loss: 9.4006
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 14100/16250, Loss: 12.8411
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 14200/16250, Loss: 7.4865
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 14300/16250, Loss: 13.5442
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 14400/16250, Loss: 8.7156
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 14500/16250, Loss: 18.6780
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 14600/16250, Loss: 10.8869
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 14700/16250, Loss: 13.6350
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 14800/16250, Loss: 13.7370
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 14900/16250, Loss: 7.5905
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 15000/16250, Loss: 15.2273
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 15100/16250, Loss: 9.9213
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 15200/16250, Loss: 10.5191
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 15300/16250, Loss: 11.4918
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 15400/16250, Loss: 7.4706
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 15500/16250, Loss: 11.6897
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 15600/16250, Loss: 9.7681
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 15700/16250, Loss: 9.7413
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 15800/16250, Loss: 12.3905
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 15900/16250, Loss: 8.3142
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 16000/16250, Loss: 9.2491
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 16100/16250, Loss: 13.3294
+    Avg batch data load: 0.00, Avg batch training: 0.43
+  Batch 16200/16250, Loss: 8.4658
+    Avg batch data load: 0.00, Avg batch training: 0.43
+Finished epoch 1/1, Loss: 13.8129
+  Avg epoch data load: 0.00, Avg epoch training: 0.43
+  Total epoch data load: 29.67, Total epoch training: 7045.30
+
+Finished Training, Loss: 13.8129
