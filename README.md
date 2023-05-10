@@ -44,8 +44,8 @@ Our results did not indicate any speed improvements from the data loading optimi
 
 Peak Memory Usage with batch size 8:
 
-| Peak Memory Usage (mb) | Time (s) per batch | \# Parameters |
-|------------------------|--------------------|---------------|
+|Model | Peak Memory Usage (mb) | Time (s) per batch | \# Parameters |
+|------------------------|--------------------|---------------|------|
 | Adjusted ResNet18 | 743 | 0.3 | 746,436 |
 | Adjusted ResNet34 | 1158 | 0.4 | 1,393,476 |
 | Adjusted ResNet50 | 3494 | 0.57 | 1,581,700 |
@@ -57,6 +57,10 @@ Peak Memory Usage with batch size 8:
 Note: adjusted means we halved the filter structure of the resnet model, using [32, 32, 64, 112] instead of the regular. This is mostly to reduce parameter count and save time.  
 
 We did observe less memory usage and better memory scaling for deeper RevNet models. Due to time constraints we weren't able to fully measure the convergence performance of the RevNet optimizations and if it truly matches that of a standard ResNet.  
+
+1 epoch convergence:
+
+![alt text](/images/diagram-2.JPG)
 
 # Conclusions
 
